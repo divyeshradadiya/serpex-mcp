@@ -40,8 +40,9 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           npm version patch
-          git push --tags
-          git push
+          git add package.json package-lock.json
+          git commit -m "chore: bump version"
+          git push --follow-tags
 
       - name: Publish to npm
         run: pnpm publish --no-git-checks
