@@ -39,9 +39,10 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          npm version patch
+          npm version patch --no-git-tag-version
           git add package.json package-lock.json
-          git commit -m "chore: bump version"
+          git commit -m "chore: bump version to $(node -p 'require(\"./package.json\").version')"
+          git tag "v$(node -p 'require(\"./package.json\").version')"
           git push --follow-tags
 
       - name: Publish to npm
