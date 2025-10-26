@@ -1,5 +1,10 @@
 name: Publish to npm
 
+permissions:
+  contents: write      # required to push tags/commits
+  issues: write        # required to create issue comments
+  packages: write      # optional: for package-related permissions
+
 on:
   push:
     branches:
@@ -16,7 +21,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
