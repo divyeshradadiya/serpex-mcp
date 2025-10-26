@@ -2,7 +2,6 @@ name: Publish to npm
 
 permissions:
   contents: write      # required to push tags/commits
-  issues: write        # required to create issue comments
   packages: write      # optional: for package-related permissions
 
 on:
@@ -56,17 +55,3 @@ jobs:
         run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Create release comment
-        if: success()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { readFileSync } = require('fs');
-            const package = JSON.parse(readFileSync('package.json', 'utf8'));
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `🚀 Published **serpex-mcp@${package.version}** to npm!`
-            });
