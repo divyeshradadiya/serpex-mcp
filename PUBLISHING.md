@@ -31,44 +31,35 @@ npm publish
 
 Publishing happens automatically when:
 
-### On GitHub Releases:
-- Create a release on GitHub → Auto-publish to npm
-- Version is read from `package.json`
+### On Every Push to Main:
+- Push code changes to `main` branch → Auto-publish to npm
+- Version automatically bumps by patch (1.0.0 → 1.0.1)
+- Creates git tag and pushes back to repo
 
-### Manual Publishing:
-- Go to GitHub Actions → "Publish to npm" → "Run workflow"
-- Choose version bump type (patch/minor/major)
-- Workflow bumps version, creates tag, and publishes
+### What Triggers Publishing:
+- Changes to `src/` files
+- Changes to `package.json`
+- Changes to `.github/workflows/publish-npm.yml`
 
 ## Version Management
 
-### Before Creating Releases:
-Update version in `package.json` manually:
+### Automatic Version Bumping:
+- Patch version bumps automatically on every publish
+- No manual version management needed
+- Git tags are created automatically
 
-```bash
-# Patch version (1.0.0 → 1.0.1) - bug fixes
-npm version patch
-
-# Minor version (1.0.0 → 1.1.0) - new features
-npm version minor
-
-# Major version (1.0.0 → 2.0.0) - breaking changes
-npm version major
-
-# Then commit and push
-git add package.json
-git commit -m "chore: bump version to X.X.X"
-git push
-```
-
-### Or Use Manual Workflow:
-1. Go to GitHub Actions tab
-2. Click "Publish to npm"
-3. Click "Run workflow"
-4. Choose version type
-5. Workflow handles everything automatically
+### Automatic Version Bumping:
+- Patch version bumps automatically on every publish
+- No manual version management needed
+- Git tags are created automatically
 
 ## Manual Publishing
+
+If needed, publish manually:
+```bash
+npm login
+npm publish
+```
 
 If needed, publish manually:
 ```bash

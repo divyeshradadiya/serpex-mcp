@@ -1,19 +1,13 @@
 name: Publish to npm
 
 on:
-  release:
-    types: [published]
-  workflow_dispatch:
-    inputs:
-      version_type:
-        description: 'Version bump type'
-        required: true
-        default: 'patch'
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - '.github/workflows/publish-npm.yml'
 
 jobs:
   publish:
@@ -42,12 +36,10 @@ jobs:
         run: pnpm build
 
       - name: Bump version and push tag
-        if: github.event_name == 'workflow_dispatch'
         run: |
-          VERSION_TYPE="${{ github.event.inputs.version_type }}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          npm version $VERSION_TYPE
+          npm version patch
           git push --tags
           git push
 
