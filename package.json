@@ -1,6 +1,6 @@
 {
   "name": "serpex-mcp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Serpex MCP Server supporting multi-engine web search (Google, Bing, DuckDuckGo, Brave, Yahoo, Yandex)",
   "license": "MIT",
   "type": "module",
