@@ -12,7 +12,7 @@ A Model Context Protocol (MCP) server that provides multi-engine web search capa
 ✅ **Time Filtering**: Filter results by day, week, month, or year  
 ✅ **Structured Results**: Clean, consistent JSON responses  
 ✅ **Fast & Reliable**: Built-in captcha handling and proxy rotation  
-✅ **Easy Integration**: Works with Jan AI, Claude Desktop, and any MCP-compatible client  
+✅ **Easy Integration**: Works with Claude Desktop, Jan AI, and any MCP-compatible client  
 
 ## Installation
 
@@ -38,20 +38,6 @@ npm install serpex-mcp
 
 ## Usage
 
-### With Jan AI
-
-1. Go to **Settings** > **MCP Servers**
-2. Click **+** to add a new server
-3. Configure:
-   - **Server Name**: `serpex`
-   - **Command**: `npx`
-   - **Arguments**: `-y serpex-mcp`
-   - **Environment Variables**:
-     - Key: `SERPEX_API_KEY`
-     - Value: `your-api-key-from-serpex.dev`
-
-See [full Jan integration guide](https://jan.ai/docs/desktop/mcp-examples/search/serpex) for detailed instructions.
-
 ### With Claude Desktop
 
 Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
@@ -69,6 +55,14 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
   }
 }
 ```
+
+### With Other MCP Clients
+
+Any MCP-compatible client can use this server. Configure it with:
+
+- **Command**: `npx`
+- **Arguments**: `-y serpex-mcp`
+- **Environment**: `SERPEX_API_KEY=your-key`
 
 ### Standalone
 
@@ -118,8 +112,8 @@ Search the web using Serpex multi-engine API.
 ### Build from Source
 
 ```bash
-git clone https://github.com/divyeshradadiya/jan.git
-cd jan/mcp-server-serpex
+git clone https://github.com/divyeshradadiya/serpex-mcp.git
+cd serpex-mcp
 pnpm install
 pnpm build
 ```
@@ -139,5 +133,5 @@ MIT
 
 - [Serpex Website](https://serpex.dev)
 - [Serpex Documentation](https://serpex.dev/docs)
-- [Jan AI](https://jan.ai)
 - [Model Context Protocol](https://modelcontextprotocol.io)
+- [MCP Specification](https://modelcontextprotocol.io/specification)

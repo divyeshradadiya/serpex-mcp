@@ -29,36 +29,44 @@ npm publish
 
 ## Auto-Publishing Setup
 
-Once secrets are configured, publishing happens automatically:
-
-### On Every Push to `main`:
-- Builds TypeScript
-- Runs tests
-- Publishes to npm
-- Creates version tags
+Publishing happens automatically when:
 
 ### On GitHub Releases:
-- Same as push + release notes
-- Comments on release
+- Create a release on GitHub → Auto-publish to npm
+- Version is read from `package.json`
+
+### Manual Publishing:
+- Go to GitHub Actions → "Publish to npm" → "Run workflow"
+- Choose version bump type (patch/minor/major)
+- Workflow bumps version, creates tag, and publishes
 
 ## Version Management
 
-### Update Version Before Push:
+### Before Creating Releases:
+Update version in `package.json` manually:
+
 ```bash
-# Patch version (1.0.0 → 1.0.1)
+# Patch version (1.0.0 → 1.0.1) - bug fixes
 npm version patch
 
-# Minor version (1.0.0 → 1.1.0)
+# Minor version (1.0.0 → 1.1.0) - new features
 npm version minor
 
-# Major version (1.0.0 → 2.0.0)
+# Major version (1.0.0 → 2.0.0) - breaking changes
 npm version major
+
+# Then commit and push
+git add package.json
+git commit -m "chore: bump version to X.X.X"
+git push
 ```
 
-### Then Push:
-```bash
-git push origin main --tags
-```
+### Or Use Manual Workflow:
+1. Go to GitHub Actions tab
+2. Click "Publish to npm"
+3. Click "Run workflow"
+4. Choose version type
+5. Workflow handles everything automatically
 
 ## Manual Publishing
 

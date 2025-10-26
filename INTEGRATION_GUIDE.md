@@ -1,8 +1,8 @@
-# Integrating Serpex MCP Server with Jan AI
+# Integrating Serpex MCP Server
 
 ## Overview
 
-This MCP (Model Context Protocol) server enables Jan AI to perform web searches using the Serpex API, providing access to multiple search engines (Google, Bing, DuckDuckGo, Brave, Yahoo, Yandex).
+This MCP (Model Context Protocol) server enables AI applications to perform web searches using the Serpex API, providing access to multiple search engines (Google, Bing, DuckDuckGo, Brave, Yahoo, Yandex).
 
 ## Installation
 
@@ -18,31 +18,36 @@ pnpm build
 
 Sign up at [serpex.dev](https://serpex.dev) and get your API key from the dashboard.
 
-### 3. Configure Jan AI
+### 3. Configure Your MCP Client
 
-Add the Serpex MCP server to your Jan configuration file:
+Configure the Serpex MCP server in your MCP-compatible application:
 
-**Location:** `~/jan/settings/settings.json` (or Jan's config directory)
+#### For Claude Desktop:
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
     "serpex": {
-      "command": "node",
-      "args": [
-        "/path/to/mcp/serpex-search-mcp-server/build/index.js"
-      ],
+      "command": "npx",
+      "args": ["-y", "serpex-mcp"],
       "env": {
-        "SERPEX_API_KEY": "your_api_key_here"
+        "SERPEX_API_KEY": "your-api-key-here"
       }
     }
   }
 }
 ```
 
-## Usage in Jan AI
+#### For Other MCP Clients:
+Use these configuration parameters:
+- **Command:** `npx`
+- **Arguments:** `-y serpex-mcp`
+- **Environment Variable:** `SERPEX_API_KEY=your-key`
 
-Once configured, the `serpex_search` tool will be available to your AI models in Jan.
+## Usage in MCP Clients
+
+Once configured, the `serpex_search` tool will be available to your AI applications.
 
 ### Example Prompts
 
@@ -118,7 +123,7 @@ Expected output:
 
 **Issue:** `SERPEX_API_KEY environment variable is required`
 
-**Solution:** Make sure your API key is set in the Jan config file or environment.
+**Solution:** Make sure your API key is set in your MCP client configuration or environment.
 
 ### No Results Returned
 
@@ -160,9 +165,11 @@ node build/index.js
 
 ## Support
 
-- **Serpex Documentation:** https://serpex.dev/docs
-- **MCP Specification:** https://github.com/modelcontextprotocol
-- **Jan AI Documentation:** https://jan.ai/docs
+## Support
+
+- **Serpex API Documentation:** https://serpex.dev/docs
+- **MCP Specification:** https://modelcontextprotocol.io/specification
+- **MCP SDK Documentation:** https://github.com/modelcontextprotocol
 
 ## License
 
