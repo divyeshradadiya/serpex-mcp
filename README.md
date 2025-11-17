@@ -5,6 +5,10 @@
 
 A Model Context Protocol (MCP) server that provides multi-engine web search capabilities through the [Serpex API](https://serpex.dev). Search across Google, Bing, DuckDuckGo, Brave, Yahoo, and Yandex with automatic engine routing and structured JSON results.
 
+<a href="https://glama.ai/mcp/servers/@divyeshradadiya/serpex-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@divyeshradadiya/serpex-mcp/badge" alt="Serpex MCP server" />
+</a>
+
 ## Features
 
 ✅ **Multi-Engine Support**: Access 6 search engines (Google, Bing, DuckDuckGo, Brave, Yahoo, Yandex)  
