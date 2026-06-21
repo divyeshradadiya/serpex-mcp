@@ -16,10 +16,7 @@ if (!API_KEY) {
 
 interface SearchParams {
   q: string;
-  engine?: 'auto' | 'google' | 'bing' | 'duckduckgo' | 'brave' | 'yahoo' | 'yandex';
-  category?: 'web';
-  time_range?: 'all' | 'day' | 'week' | 'month' | 'year';
-  format?: 'json';
+  engine?: 'auto' | 'duckduckgo' | 'yahoo' | 'metacrawler';
 }
 
 interface SearchResult {
@@ -44,8 +41,6 @@ interface SerpexResponse {
   query: string;
   engines: string[];
   results: SearchResult[];
-  answers: any[];
-  suggestions: string[];
 }
 
 class SerpexServer {
@@ -88,7 +83,7 @@ class SerpexServer {
       tools: [
         {
           name: 'serpex_search',
-          description: 'Search the web using Serpex API. Returns structured search results from multiple engines (Google, Bing, DuckDuckGo, Brave, Yahoo, Yandex).',
+          description: 'Search the web using Serpex API. Returns structured search results. Supported engines: duckduckgo (default), yahoo, metacrawler.',
           inputSchema: {
             type: 'object',
             properties: {
@@ -98,13 +93,8 @@ class SerpexServer {
               },
               engine: {
                 type: 'string',
-                description: 'Search engine (default: auto)',
-                enum: ['auto', 'google', 'bing', 'duckduckgo', 'brave', 'yahoo', 'yandex'],
-              },
-              time_range: {
-                type: 'string',
-                description: 'Filter by time range',
-                enum: ['all', 'day', 'week', 'month', 'year'],
+                description: 'Search engine hint (default: auto). Supported: auto, duckduckgo, yahoo, metacrawler.',
+                enum: ['auto', 'duckduckgo', 'yahoo', 'metacrawler'],
               },
             },
             required: ['q'],
@@ -138,10 +128,6 @@ class SerpexServer {
         searchParams.engine = args.engine as SearchParams['engine'];
       }
 
-      if (args.time_range && typeof args.time_range === 'string') {
-        searchParams.time_range = args.time_range as SearchParams['time_range'];
-      }
-
       return await this.handleSearch(searchParams);
     });
   }
@@ -155,10 +141,7 @@ class SerpexServer {
       const response = await this.axiosInstance.get<SerpexResponse>('/api/search', {
         params: {
           q: params.q,
-          engine: params.engine || 'auto',
-          category: 'web',
-          time_range: params.time_range || 'all',
-          format: 'json',
+          ...(params.engine && params.engine !== 'auto' ? { engine: params.engine } : {}),
         },
       });
 
@@ -179,7 +162,6 @@ class SerpexServer {
                 position: r.position,
                 engine: r.engine,
               })),
-              suggestions: data.suggestions,
             }, null, 2),
           },
         ],
