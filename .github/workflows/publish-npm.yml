@@ -1,57 +1,33 @@
 name: Publish to npm
 
-permissions:
-  contents: write      # required to push tags/commits
-  packages: write      # optional: for package-related permissions
-
+# TAG-triggered (matches the serpex SDK repos). Push a `v<version>` tag to publish.
+# NO auto-bump: set package.json's version yourself, commit, then tag + push the tag.
+# A normal push to main does NOT publish anymore.
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'src/**'
-      - 'package.json'
-      - '.github/workflows/publish-npm.yml'
+    tags:
+      - 'v*'
+  release:
+    types: [published]
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-          persist-credentials: true
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: Install dependencies
-        run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm build
 
-      - name: Build TypeScript
-        run: pnpm build
-
-      - name: Bump version and push tag
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          npm version patch --no-git-tag-version
-          git add package.json pnpm-lock.yaml
-          git commit -m "chore: bump version to $(node -p 'require(\"./package.json\").version')"
-          git tag "v$(node -p 'require(\"./package.json\").version')"
-          git push --follow-tags
-
-      - name: Publish to npm
-        run: pnpm publish --no-git-checks
+      - run: pnpm publish --no-git-checks --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
