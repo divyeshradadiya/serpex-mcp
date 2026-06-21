@@ -16,7 +16,6 @@ if (!API_KEY) {
 
 interface SearchParams {
   q: string;
-  engine?: 'auto' | 'duckduckgo' | 'yahoo' | 'metacrawler';
 }
 
 interface SearchResult {
@@ -83,18 +82,13 @@ class SerpexServer {
       tools: [
         {
           name: 'serpex_search',
-          description: 'Search the web using Serpex API. Returns structured search results. Supported engines: duckduckgo (default), yahoo, metacrawler.',
+          description: 'Search the web using Serpex API. Returns structured search results with smart auto-routing.',
           inputSchema: {
             type: 'object',
             properties: {
               q: {
                 type: 'string',
                 description: 'Search query (max 500 characters)',
-              },
-              engine: {
-                type: 'string',
-                description: 'Search engine hint (default: auto). Supported: auto, duckduckgo, yahoo, metacrawler.',
-                enum: ['auto', 'duckduckgo', 'yahoo', 'metacrawler'],
               },
             },
             required: ['q'],
@@ -124,10 +118,6 @@ class SerpexServer {
         q: args.q as string,
       };
 
-      if (args.engine && typeof args.engine === 'string') {
-        searchParams.engine = args.engine as SearchParams['engine'];
-      }
-
       return await this.handleSearch(searchParams);
     });
   }
@@ -141,7 +131,6 @@ class SerpexServer {
       const response = await this.axiosInstance.get<SerpexResponse>('/api/search', {
         params: {
           q: params.q,
-          ...(params.engine && params.engine !== 'auto' ? { engine: params.engine } : {}),
         },
       });
 
