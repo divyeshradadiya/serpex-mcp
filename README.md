@@ -75,24 +75,30 @@ serpex-mcp
 
 ### `serpex_search`
 
-Search the web using Serpex multi-engine API.
+Search the web using Serpex multi-engine API. Optionally fetches full page content
+(markdown) for the top results inline with the search — best-effort, so check each
+result for `content` vs `content_error`.
 
 **Parameters:**
-- `q` (required): Search query string
-- `engine` (optional): Choose search engine
-  - `auto` (default) - Automatically selects best engine
-  - `google`, `bing`, `duckduckgo`, `brave`, `yahoo`, `yandex`
-- `time_range` (optional): Filter by time
-  - `all` (default), `day`, `week`, `month`, `year`
+- `q` (required): Search query string (max 500 characters)
+- `include_content` (optional, boolean): Also fetch full page content (markdown) for
+  the top results. Best-effort — roughly 79% of result URLs return content; blocked
+  or robots-disallowed pages return `content_error` instead. Default: `false`.
+- `content_results` (optional, `5 | 10`): Number of top results to fetch content for,
+  when `include_content` is `true`. Must be exactly `5` or `10`. Default: `5`.
 
 **Example:**
 ```javascript
 {
   "q": "artificial intelligence trends 2025",
-  "engine": "google",
-  "time_range": "month"
+  "include_content": true,
+  "content_results": 5
 }
 ```
+
+**Response** (JSON, as tool output text) includes `content_requested` /
+`content_delivered` counts and, per result, `content` on success or `content_error`
+on failure — both keys are omitted when content wasn't requested.
 
 ## Getting Your API Key
 
