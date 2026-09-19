@@ -3,13 +3,12 @@
 [![npm version](https://badge.fury.io/js/serpex-mcp.svg)](https://www.npmjs.com/package/serpex-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Model Context Protocol (MCP) server that provides multi-engine web search capabilities through the [Serpex API](https://serpex.dev). Search across Google, Bing, DuckDuckGo, Brave, Yahoo, and Yandex with automatic engine routing and structured JSON results.
+A Model Context Protocol (MCP) server that gives AI agents real-time web search through the [Serpex API](https://serpex.dev). Every query is automatically routed to the best available source, with fallback, and returns structured JSON results.
 
 ## Features
 
-✅ **Multi-Engine Support**: Access 6 search engines (Google, Bing, DuckDuckGo, Brave, Yahoo, Yandex)  
-✅ **Auto Routing**: Automatically selects the best available search engine  
-✅ **Time Filtering**: Filter results by day, week, month, or year  
+✅ **Smart Auto-Routing**: Every query goes to the best available source, with automatic fallback — no engine to choose  
+✅ **Page Content**: Optionally fetch the top results' pages as markdown in the same call  
 ✅ **Structured Results**: Clean, consistent JSON responses  
 ✅ **Fast & Reliable**: Built-in captcha handling and proxy rotation  
 ✅ **Easy Integration**: Works with Claude Desktop, Jan AI, and any MCP-compatible client  
@@ -75,7 +74,7 @@ serpex-mcp
 
 ### `serpex_search`
 
-Search the web using Serpex multi-engine API. Optionally fetches full page content
+Search the web using the Serpex API (smart auto-routed). Optionally fetches full page content
 (markdown) for the top results inline with the search — best-effort, so check each
 result for `content` vs `content_error`.
 
