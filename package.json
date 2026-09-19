@@ -1,7 +1,7 @@
 {
   "name": "serpex-mcp",
-  "version": "1.1.0",
-  "description": "Serpex MCP Server supporting multi-engine web search (Google, Bing, DuckDuckGo, Brave, Yahoo, Yandex)",
+  "version": "1.1.1",
+  "description": "Serpex MCP server: real-time, auto-routed web search for AI agents, with optional page content as markdown",
   "license": "MIT",
   "type": "module",
   "main": "./build/index.js",

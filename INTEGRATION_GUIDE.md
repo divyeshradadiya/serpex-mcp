@@ -2,14 +2,17 @@
 
 ## Overview
 
-This MCP (Model Context Protocol) server enables AI applications to perform web searches using the Serpex API, providing access to multiple search engines (Google, Bing, DuckDuckGo, Brave, Yahoo, Yandex).
+This MCP (Model Context Protocol) server enables AI applications to perform web searches using the Serpex API, with smart auto-routing: every query is sent to the best available source, with automatic fallback.
 
 ## Installation
 
 ### 1. Install the MCP Server
 
+No install step is needed — `npx -y serpex-mcp` (below) fetches it. To build from source:
+
 ```bash
-cd mcp/serpex-search-mcp-server
+git clone https://github.com/divyeshradadiya/serpex-mcp.git
+cd serpex-mcp
 pnpm install
 pnpm build
 ```
@@ -56,14 +59,9 @@ Once configured, the `serpex_search` tool will be available to your AI applicati
    Search for "artificial intelligence trends 2025"
    ```
 
-2. **Specific Engine:**
+2. **Search with page content:**
    ```
-   Use Google to search for "climate change research"
-   ```
-
-3. **Time-Filtered Search:**
-   ```
-   Search for news about "OpenAI" from the last month
+   Search for "climate change research" and read the top 5 pages
    ```
 
 ### Tool Parameters
@@ -71,21 +69,11 @@ Once configured, the `serpex_search` tool will be available to your AI applicati
 The MCP server exposes one tool: `serpex_search`
 
 **Parameters:**
-- `q` (required): Search query string
-- `engine` (optional): Choose search engine
-  - `auto` (default) - Automatically selects best engine
-  - `google`
-  - `bing`
-  - `duckduckgo`
-  - `brave`
-  - `yahoo`
-  - `yandex`
-- `time_range` (optional): Filter results by time
-  - `all` (default)
-  - `day`
-  - `week`
-  - `month`
-  - `year`
+- `q` (required): Search query string (max 500 characters)
+- `include_content` (optional, boolean): Also fetch full page content (markdown) for the top results. Best-effort — blocked or robots-disallowed pages return `content_error` instead. Default: `false`.
+- `content_results` (optional, `5` or `10`): How many top results to fetch content for when `include_content` is `true`. Default: `5`.
+
+There is no engine parameter: routing is automatic. (The API's legacy `engine`/`engines` parameters are deprecated and ignored; this server never sends them.)
 
 ## API Information
 
@@ -96,11 +84,10 @@ The MCP server exposes one tool: `serpex_search`
 
 ## Features
 
-✅ Multiple search engines support  
+✅ Smart auto-routing with automatic fallback  
 ✅ Real-time search results  
 ✅ Structured JSON responses  
-✅ Time-range filtering  
-✅ Auto-engine selection  
+✅ Optional page content (markdown) for top results  
 ✅ Error handling and validation  
 
 ## Testing
@@ -114,8 +101,8 @@ node test-server.js
 Expected output:
 - Initialize response ✅
 - List tools response ✅
-- Search results from Google ✅
-- Search results from auto engine ✅
+- Search results ✅
+- Search results with page content ✅
 
 ## Troubleshooting
 
@@ -139,7 +126,7 @@ Expected output:
 ### File Structure
 
 ```
-mcp/serpex-search-mcp-server/
+serpex-mcp/
 ├── src/
 │   └── index.ts          # Main MCP server implementation
 ├── build/                # Compiled JavaScript output
@@ -162,8 +149,6 @@ pnpm build
 export SERPEX_API_KEY="your_key_here"
 node build/index.js
 ```
-
-## Support
 
 ## Support
 

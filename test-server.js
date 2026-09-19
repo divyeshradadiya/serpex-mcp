@@ -79,20 +79,19 @@ async function testMCPServer() {
     name: "serpex_search",
     arguments: {
       q: "OpenAI GPT-4",
-      engine: "google",
-      time_range: "month",
     },
   });
 
   await new Promise((resolve) => setTimeout(resolve, 5000));
 
-  // Test 4: Search with auto engine
-  console.log("\n=== Test 4: Auto Engine Search ===");
+  // Test 4: Search with page content
+  console.log("\n=== Test 4: Search With Page Content ===");
   sendRequest("tools/call", {
     name: "serpex_search",
     arguments: {
       q: "Model Context Protocol",
-      engine: "auto",
+      include_content: true,
+      content_results: 5,
     },
   });
 
