@@ -3,7 +3,8 @@ name: Publish to npm
 # TAG-triggered (matches the serpex SDK repos). Push a `v<version>` tag to publish.
 # NO auto-bump: set package.json's version yourself, commit, then tag + push the tag.
 # A normal push to main does NOT publish anymore.
-# npm Trusted Publishing (OIDC): no NPM_TOKEN, nothing to expire.
+# npm Trusted Publishing (OIDC) — NO registry-url on setup-node: it writes an .npmrc with an
+# empty _authToken, npm then thinks it is authenticated and the OIDC exchange is denied (403): no NPM_TOKEN, nothing to expire.
 on:
   push:
     tags:
@@ -22,7 +23,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
 
       - uses: pnpm/action-setup@v2
         with:
