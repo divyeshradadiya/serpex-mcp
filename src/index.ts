@@ -59,7 +59,7 @@ class SerpexServer {
     this.server = new Server(
       {
         name: 'serpex-mcp-server',
-        version: '1.1.0',
+        version: '1.1.2',
       },
       {
         capabilities: {
@@ -91,7 +91,7 @@ class SerpexServer {
       tools: [
         {
           name: 'serpex_search',
-          description: 'Search the web using Serpex API. Returns structured search results with smart auto-routing. Optionally fetches full page content (markdown) for the top results inline — best-effort: roughly 79% of result URLs return content, blocked or robots-disallowed pages return a content_error instead of content.',
+          description: 'Real-time web search with Serpex. Returns structured search results. Optionally fetches full page content (markdown) for the top results inline — best-effort: results whose page cannot be extracted return a content_error instead of content.',
           inputSchema: {
             type: 'object',
             properties: {

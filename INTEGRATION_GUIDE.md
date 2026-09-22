@@ -2,7 +2,7 @@
 
 ## Overview
 
-This MCP (Model Context Protocol) server enables AI applications to perform web searches using the Serpex API, with smart auto-routing: every query is sent to the best available source, with automatic fallback.
+This MCP (Model Context Protocol) server enables AI applications to perform web searches using Serpex, a real-time web search API, with optional page content as markdown.
 
 ## Installation
 
@@ -70,10 +70,10 @@ The MCP server exposes one tool: `serpex_search`
 
 **Parameters:**
 - `q` (required): Search query string (max 500 characters)
-- `include_content` (optional, boolean): Also fetch full page content (markdown) for the top results. Best-effort — blocked or robots-disallowed pages return `content_error` instead. Default: `false`.
+- `include_content` (optional, boolean): Also fetch full page content (markdown) for the top results. Best-effort — pages that can't be extracted return `content_error` instead. Default: `false`.
 - `content_results` (optional, `5` or `10`): How many top results to fetch content for when `include_content` is `true`. Default: `5`.
 
-There is no engine parameter: routing is automatic. (The API's legacy `engine`/`engines` parameters are deprecated and ignored; this server never sends them.)
+There is no engine parameter: Serpex is one search engine. (The API's legacy `engine`/`engines` parameters are deprecated and ignored since 2026-06; this server never sends them. The `engines`/`engine` fields in the tool output are kept for compatibility.)
 
 ## API Information
 
@@ -84,7 +84,7 @@ There is no engine parameter: routing is automatic. (The API's legacy `engine`/`
 
 ## Features
 
-✅ Smart auto-routing with automatic fallback  
+✅ One search engine — nothing to configure  
 ✅ Real-time search results  
 ✅ Structured JSON responses  
 ✅ Optional page content (markdown) for top results  

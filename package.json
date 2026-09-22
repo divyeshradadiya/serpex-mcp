@@ -1,7 +1,7 @@
 {
   "name": "serpex-mcp",
-  "version": "1.1.1",
-  "description": "Serpex MCP server: real-time, auto-routed web search for AI agents, with optional page content as markdown",
+  "version": "1.1.2",
+  "description": "Serpex MCP server: real-time web search for AI agents, with optional page content as markdown",
   "license": "MIT",
   "type": "module",
   "main": "./build/index.js",
@@ -18,10 +18,12 @@
     "web search mcp",
     "serpex",
     "search",
-    "serp",
-    "google",
-    "bing",
-    "duckduckgo",
+    "search api",
+    "web search",
+    "real-time search",
+    "ai agents",
+    "llm",
+    "rag",
     "claude",
     "claude-desktop",
     "jan",
@@ -30,8 +32,7 @@
   "author": "Serpex Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/divyeshradadiya/serp-backend.git",
-    "directory": "mcp/serpex-search-mcp-server"
+    "url": "https://github.com/divyeshradadiya/serpex-mcp.git"
   },
   "homepage": "https://serpex.dev",
   "dependencies": {
