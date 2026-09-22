@@ -3,12 +3,15 @@ name: Publish to npm
 # TAG-triggered (matches the serpex SDK repos). Push a `v<version>` tag to publish.
 # NO auto-bump: set package.json's version yourself, commit, then tag + push the tag.
 # A normal push to main does NOT publish anymore.
+# npm Trusted Publishing (OIDC): no NPM_TOKEN, nothing to expire.
 on:
   push:
     tags:
       - 'v*'
-  release:
-    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   publish:
@@ -28,6 +31,6 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm build
 
-      - run: pnpm publish --no-git-checks --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm install -g npm@latest # trusted publishing needs npm >= 11.5.1
+      # npm (not pnpm) publishes: npm's CLI does the OIDC exchange
+      - run: npm publish --access public
