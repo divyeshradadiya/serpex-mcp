@@ -3,14 +3,14 @@
 [![npm version](https://badge.fury.io/js/serpex-mcp.svg)](https://www.npmjs.com/package/serpex-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Model Context Protocol (MCP) server that gives AI agents real-time web search through the [Serpex API](https://serpex.dev). Every query is automatically routed to the best available source, with fallback, and returns structured JSON results.
+A Model Context Protocol (MCP) server that gives AI agents real-time web search through [Serpex](https://serpex.dev), a real-time web search API. Every query returns structured JSON results, with optional page content as markdown.
 
 ## Features
 
-✅ **Smart Auto-Routing**: Every query goes to the best available source, with automatic fallback — no engine to choose  
+✅ **Real-Time Web Search**: One search engine, nothing to configure — no engine to choose  
 ✅ **Page Content**: Optionally fetch the top results' pages as markdown in the same call  
 ✅ **Structured Results**: Clean, consistent JSON responses  
-✅ **Fast & Reliable**: Built-in captcha handling and proxy rotation  
+✅ **Fast & Reliable**: Real-time results from a managed API  
 ✅ **Easy Integration**: Works with Claude Desktop, Jan AI, and any MCP-compatible client  
 
 ## Installation
@@ -74,15 +74,15 @@ serpex-mcp
 
 ### `serpex_search`
 
-Search the web using the Serpex API (smart auto-routed). Optionally fetches full page content
+Search the web with Serpex, a real-time web search API. Optionally fetches full page content
 (markdown) for the top results inline with the search — best-effort, so check each
 result for `content` vs `content_error`.
 
 **Parameters:**
 - `q` (required): Search query string (max 500 characters)
 - `include_content` (optional, boolean): Also fetch full page content (markdown) for
-  the top results. Best-effort — roughly 79% of result URLs return content; blocked
-  or robots-disallowed pages return `content_error` instead. Default: `false`.
+  the top results. Best-effort — pages that can't be extracted
+  return `content_error` instead. Default: `false`.
 - `content_results` (optional, `5 | 10`): Number of top results to fetch content for,
   when `include_content` is `true`. Must be exactly `5` or `10`. Default: `5`.
 

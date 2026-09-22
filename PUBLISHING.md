@@ -27,45 +27,17 @@ npm login
 npm publish
 ```
 
-## Auto-Publishing Setup
+## Publishing (tag-triggered)
 
-Publishing happens automatically when:
+`.github/workflows/publish-npm.yml` publishes when a `v*` tag is pushed (or a GitHub release is published). There is no auto-bump:
 
-### On Every Push to Main:
-- Push code changes to `main` branch → Auto-publish to npm
-- Version automatically bumps by patch (1.0.0 → 1.0.1)
-- Creates git tag and pushes back to repo
-
-### What Triggers Publishing:
-- Changes to `src/` files
-- Changes to `package.json`
-- Changes to `.github/workflows/publish-npm.yml`
-
-## Version Management
-
-### Automatic Version Bumping:
-- Patch version bumps automatically on every publish
-- No manual version management needed
-- Git tags are created automatically
-
-### Automatic Version Bumping:
-- Patch version bumps automatically on every publish
-- No manual version management needed
-- Git tags are created automatically
-
-## Manual Publishing
-
-If needed, publish manually:
 ```bash
-npm login
-npm publish
+# 1. set "version" in package.json, commit, merge to main
+# 2. tag and push the tag
+git tag v1.1.2 && git push origin v1.1.2
 ```
 
-If needed, publish manually:
-```bash
-npm login
-npm publish
-```
+A normal push to `main` does not publish.
 
 ## Troubleshooting
 
