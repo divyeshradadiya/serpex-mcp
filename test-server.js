@@ -3,7 +3,8 @@
 /**
  * Offline smoke test for the Serpex MCP server — no network, no real API key.
  * Starts the built server over stdio, runs `initialize` + `tools/list`, and
- * checks that `serpex_search` is exposed with its documented inputs.
+ * checks that `serpex_search` and `serpex_extract` are exposed with their
+ * documented inputs (and that no stealth input is exposed).
  * (Live `tools/call` checks need SERPEX_API_KEY and are intentionally not run here.)
  */
 
@@ -62,6 +63,16 @@ try {
   const props = Object.keys(tool.inputSchema.properties).sort().join(",");
   if (props !== "content_results,include_content,q") fail(`unexpected inputs: ${props}`);
   console.log(`ok  tools/list -> serpex_search(${props})`);
+
+  const extract = (list.result?.tools || []).find((t) => t.name === "serpex_extract");
+  if (!extract) fail("serpex_extract not listed");
+  const extractProps = Object.keys(extract.inputSchema.properties).sort().join(",");
+  if (extractProps !== "format,urls") fail(`unexpected extract inputs: ${extractProps}`);
+  console.log(`ok  tools/list -> serpex_extract(${extractProps})`);
+
+  if (init.result.serverInfo.version !== "1.2.0") {
+    fail(`server version ${init.result.serverInfo.version}, expected 1.2.0`);
+  }
 
   server.kill();
   console.log("PASS");

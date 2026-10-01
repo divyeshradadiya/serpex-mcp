@@ -2,7 +2,7 @@
 
 ## Overview
 
-This MCP (Model Context Protocol) server enables AI applications to perform web searches using Serpex, a real-time web search API, with optional page content as markdown.
+This MCP (Model Context Protocol) server enables AI applications to perform web searches using Serpex, the web search API and extract API for AI agents: ranked web results, optional page content as markdown, and page extraction.
 
 ## Installation
 
@@ -50,7 +50,7 @@ Use these configuration parameters:
 
 ## Usage in MCP Clients
 
-Once configured, the `serpex_search` tool will be available to your AI applications.
+Once configured, the `serpex_search` and `serpex_extract` tools will be available to your AI applications.
 
 ### Example Prompts
 
@@ -66,14 +66,22 @@ Once configured, the `serpex_search` tool will be available to your AI applicati
 
 ### Tool Parameters
 
-The MCP server exposes one tool: `serpex_search`
+The MCP server exposes two tools.
+
+#### `serpex_search`
 
 **Parameters:**
 - `q` (required): Search query string (max 500 characters)
 - `include_content` (optional, boolean): Also fetch full page content (markdown) for the top results. Best-effort — pages that can't be extracted return `content_error` instead. Default: `false`.
 - `content_results` (optional, `5` or `10`): How many top results to fetch content for when `include_content` is `true`. Default: `5`.
 
-There is no engine parameter: Serpex is one search engine. (The API's legacy `engine`/`engines` parameters are deprecated and ignored since 2026-06; this server never sends them. The `engines`/`engine` fields in the tool output are kept for compatibility.)
+There is no engine parameter: Serpex is one search engine. (The API's legacy `engine`/`engines` parameters are deprecated and ignored since 2026-06; this server never sends them, and since 1.2.0 the tool output no longer carries the `engines`/`engine` fields.)
+
+#### `serpex_extract`
+
+**Parameters:**
+- `urls` (required): 1 to 10 absolute http(s) URLs.
+- `format` (optional, `markdown` or `html`): Output format. Default: `markdown`.
 
 ## API Information
 

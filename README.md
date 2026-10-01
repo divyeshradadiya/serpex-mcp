@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/serpex-mcp.svg)](https://www.npmjs.com/package/serpex-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Model Context Protocol (MCP) server that gives AI agents web search through [Serpex](https://serpex.dev). Serpex is a web search API and extract API for AI agents. Search returns ranked web results, optionally with page content as markdown; Extract turns known URLs into clean markdown. Serpex runs its own search engine.
+A Model Context Protocol (MCP) server that gives AI agents web search and page extraction through [Serpex](https://serpex.dev). Serpex is a web search API and extract API for AI agents. Search returns ranked web results, optionally with page content as markdown; Extract turns known URLs into clean markdown. Serpex runs its own search engine.
 
 ## Features
 
@@ -73,7 +73,7 @@ serpex-mcp
 
 ### `serpex_search`
 
-Search the web with Serpex, a real-time web search API. Optionally fetches full page content
+Search the web with Serpex. Optionally fetches full page content
 (markdown) for the top results inline with the search — best-effort, so check each
 result for `content` vs `content_error`.
 
@@ -94,9 +94,30 @@ result for `content` vs `content_error`.
 }
 ```
 
-**Response** (JSON, as tool output text) includes `content_requested` /
+**Response** (JSON, as tool output text) includes `status` (`success` or `no_results`),
+`total_results`, `credits_used`, a `message` when nothing was found, `content_requested` /
 `content_delivered` counts and, per result, `content` on success or `content_error`
 on failure — both keys are omitted when content wasn't requested.
+
+### `serpex_extract`
+
+Extract the content of known web pages as clean markdown (or HTML).
+
+**Parameters:**
+- `urls` (required): 1 to 10 absolute http(s) URLs.
+- `format` (optional, `markdown | html`): Output format. Default: `markdown`.
+
+**Example:**
+```javascript
+{
+  "urls": ["https://example.com/pricing"],
+  "format": "markdown"
+}
+```
+
+**Response** (JSON, as tool output text) includes `successful`, `failed`, `credits_used`
+and, per URL, `success` plus `markdown` / `html`, or `error` when the page could not be
+extracted. Extract calls can take up to about a minute, so the server waits up to 100 s.
 
 ## Getting Your API Key
 
