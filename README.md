@@ -3,14 +3,13 @@
 [![npm version](https://badge.fury.io/js/serpex-mcp.svg)](https://www.npmjs.com/package/serpex-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Model Context Protocol (MCP) server that gives AI agents real-time web search through [Serpex](https://serpex.dev), a real-time web search API. Every query returns structured JSON results, with optional page content as markdown.
+A Model Context Protocol (MCP) server that gives AI agents web search through [Serpex](https://serpex.dev). Serpex is a web search API and extract API for AI agents. Search returns ranked web results, optionally with page content as markdown; Extract turns known URLs into clean markdown. Serpex runs its own search engine.
 
 ## Features
 
-✅ **Real-Time Web Search**: One search engine, nothing to configure — no engine to choose  
+✅ **Web Search**: Ranked web results, nothing to configure  
 ✅ **Page Content**: Optionally fetch the top results' pages as markdown in the same call  
 ✅ **Structured Results**: Clean, consistent JSON responses  
-✅ **Fast & Reliable**: Real-time results from a managed API  
 ✅ **Easy Integration**: Works with Claude Desktop, Jan AI, and any MCP-compatible client  
 
 ## Installation
