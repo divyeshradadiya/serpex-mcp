@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/serpex-mcp.svg)](https://www.npmjs.com/package/serpex-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Model Context Protocol (MCP) server that gives AI agents web search and page extraction through [Serpex](https://serpex.dev). Serpex is a web search API and extract API for AI agents. Search returns ranked web results, optionally with page content as markdown; Extract turns known URLs into clean markdown. Serpex runs its own search engine.
+A Model Context Protocol (MCP) server that gives AI agents web search and page extraction through [Serpex](https://serpex.dev). Serpex is a web search API and extract API for AI agents. Search returns ranked web results, optionally with page content as markdown; Extract turns known URLs into clean markdown. Every search is routed automatically: there is no engine to choose.
 
 ## Features
 
@@ -69,6 +69,16 @@ export SERPEX_API_KEY="your-api-key-here"
 serpex-mcp
 ```
 
+### Environment
+
+| Variable | Required | Meaning |
+|---|---|---|
+| `SERPEX_API_KEY` | yes | Your Serpex API key |
+| `SERPEX_BASE_URL` | no | API base URL. Default `https://api.serpex.dev` |
+
+The server calls the API through the official [`serpex`](https://www.npmjs.com/package/serpex)
+SDK, so request parameters, timeouts and error parsing follow the SDK.
+
 ## Available Tools
 
 ### `serpex_search`
@@ -78,7 +88,8 @@ Search the web with Serpex. Optionally fetches full page content
 result for `content` vs `content_error`.
 
 **Parameters:**
-- `q` (required): Search query string (max 500 characters)
+- `q` (required): Search query string (max 500 characters). Operators such as `site:`,
+  `-site:`, `after:YYYY-MM-DD` and `before:YYYY-MM-DD` go inside the query.
 - `include_content` (optional, boolean): Also fetch full page content (markdown) for
   the top results. Best-effort — pages that can't be extracted
   return `content_error` instead. Default: `false`.
@@ -99,6 +110,9 @@ result for `content` vs `content_error`.
 `content_delivered` counts and, per result, `content` on success or `content_error`
 on failure — both keys are omitted when content wasn't requested.
 
+Credits: 1 per search; with `include_content`, 1 when no page came back, 3 for 1-5 pages,
+6 for 6-10 pages. An empty result is charged only when it was confirmed as genuinely empty.
+
 ### `serpex_extract`
 
 Extract the content of known web pages as clean markdown (or HTML).
@@ -116,8 +130,21 @@ Extract the content of known web pages as clean markdown (or HTML).
 ```
 
 **Response** (JSON, as tool output text) includes `successful`, `failed`, `credits_used`
-and, per URL, `success` plus `markdown` / `html`, or `error` when the page could not be
-extracted. Extract calls can take up to about a minute, so the server waits up to 100 s.
+and, per URL, `success` plus `markdown` / `html`, or `error` and `error_type` (for example
+`http`, `robots_disallowed`, `timeout`, `unsupported_content_type`) when the page could not be
+extracted. Failed URLs are not charged. Extract calls can take up to about a minute, so the
+server waits up to 100 s.
+
+Stealth mode is not exposed: it ends on 2026-11-01.
+
+### Errors
+
+A failed call returns `isError: true` with one sentence the agent can act on: what happened,
+whether it was charged and whether to retry. By status: 400 (fix the arguments), 401 (check
+`SERPEX_API_KEY`), 402 (out of credits, with the balance), 429 (rate limit — 5, 25 or 50
+requests per second by plan — with the wait in ms), 5xx (temporary, not charged, retry).
+Invalid arguments (empty `q`, `content_results` other than 5 or 10, more than 10 URLs) are
+rejected before any request is sent.
 
 ## Getting Your API Key
 
@@ -130,7 +157,7 @@ extracted. Extract calls can take up to about a minute, so the server waits up t
 
 - **Base URL**: `https://api.serpex.dev`
 - **Documentation**: [https://serpex.dev/docs](https://serpex.dev/docs)
-- **Pricing**: Free tier available, affordable paid plans
+- **Pricing**: [serpex.dev/docs/getting-started/pricing](https://serpex.dev/docs/getting-started/pricing)
 
 ## Development
 
@@ -145,9 +172,13 @@ pnpm build
 
 ### Run Tests
 
+Offline, no API key or network. Build first: `npm test` runs the built server. It starts a
+local mock of the Serpex API serving the recorded responses in `test/fixtures/` and checks every
+tool output and error message.
+
 ```bash
-export SERPEX_API_KEY="your-key-here"
-pnpm test
+npm run build
+npm test
 ```
 
 ## License
