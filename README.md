@@ -77,7 +77,7 @@ serpex-mcp
 | `SERPEX_BASE_URL` | no | API base URL. Default `https://api.serpex.dev` |
 
 The server calls the API through the official [`serpex`](https://www.npmjs.com/package/serpex)
-SDK, so request parameters, timeouts and error parsing follow the SDK.
+SDK (`^2.12.0`), so request parameters, timeouts and error parsing follow the SDK.
 
 ## Available Tools
 

@@ -1,13 +1,13 @@
 # Changelog
 
-## 1.2.1 — 2026-10-23
+## 1.3.0 — 2026-10-23
 
-- Calls the API through the official `serpex` SDK (`^2.11.0`) instead of its own axios client, so parameters, timeouts and error parsing cannot drift from the API. `axios` is no longer a dependency.
+- Calls the API through the official `serpex` SDK (`^2.12.0`) instead of its own axios client, so parameters, timeouts and error parsing cannot drift from the API. `axios` is no longer a dependency. Tool names, inputs and output fields are unchanged; error texts are new.
 - Errors: one actionable sentence per HTTP status (400 fix arguments, 401 check `SERPEX_API_KEY`, 402 out of credits with the balance, 429 retry after N ms with the plan limit, 5xx temporary and not charged, with the request id). An object-shaped error body no longer shows as `[object Object]`.
 - `serpex_extract` output adds `error_type` for failed URLs and no longer includes the empty `markdown` of a failure.
 - `serpex_search` rejects a query over 500 characters before sending it; the `q` description lists the search operators.
 - New optional `SERPEX_BASE_URL`.
-- `User-Agent: serpex-js/<sdk> serpex-mcp/1.2.1` with serpex >= 2.11.1.
+- `User-Agent: serpex-js/<sdk> serpex-mcp/1.3.0`.
 - Published files limited to `build/`, README, LICENSE and CHANGELOG.
 - `npm test` is now an offline contract test against a local mock API serving recorded responses (`test/fixtures/`).
 

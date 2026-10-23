@@ -12,7 +12,7 @@ import {
 import { SerpexClient, SerpApiException } from 'serpex';
 import type { ExtractParams, ExtractResponse, SearchParams, SearchResponse, SerpexClientOptions } from 'serpex';
 
-const VERSION = '1.2.1';
+const VERSION = '1.3.0';
 
 const API_KEY = process.env.SERPEX_API_KEY;
 if (!API_KEY) {
@@ -202,12 +202,8 @@ class SerpexServer {
       }
     );
 
-    // `userAgent` (serpex >= 2.11.1) adds this server to the SDK's User-Agent
-    // ("serpex-js/<sdk> serpex-mcp/<version>"); older SDKs ignore it. Typed as
-    // an intersection so it compiles against either.
-    const options: SerpexClientOptions & { userAgent?: string } = {
-      userAgent: `serpex-mcp/${VERSION}`,
-    };
+    // Adds this server to the SDK's User-Agent: "serpex-js/<sdk> serpex-mcp/<version>".
+    const options: SerpexClientOptions = { userAgent: `serpex-mcp/${VERSION}` };
     this.client = new SerpexClient(API_KEY as string, BASE_URL, options);
 
     this.setupToolHandlers();

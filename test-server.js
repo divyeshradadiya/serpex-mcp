@@ -100,7 +100,7 @@ try {
     capabilities: {},
     clientInfo: { name: "offline-test", version: "1.0.0" },
   });
-  check(init.result?.serverInfo?.version === "1.2.1", `initialize -> ${init.result?.serverInfo?.name} ${init.result?.serverInfo?.version}`);
+  check(init.result?.serverInfo?.version === "1.3.0", `initialize -> ${init.result?.serverInfo?.name} ${init.result?.serverInfo?.version}`);
 
   const list = await request("tools/list");
   const tools = list.result?.tools || [];
@@ -116,8 +116,7 @@ try {
   let req = seen.at(-1);
   check(req.method === "GET" && req.path === "/api/search" && Object.keys(req.query).join(",") === "q", "plain search sends only q");
   const ua = req.headers["user-agent"] || "";
-  // serpex >= 2.11.1 appends this server's token; 2.11.0 sends its own only.
-  check(/^serpex-js\/2\.11\.0$/.test(ua) || /^serpex-js\/\d+\.\d+\.\d+ serpex-mcp\/1\.2\.1$/.test(ua), `User-Agent (${ua})`);
+  check(/^serpex-js\/2\.(1[2-9]|[2-9]\d)\.\d+ serpex-mcp\/1\.3\.0$/.test(ua), `User-Agent (${ua})`);
   check(req.headers.authorization === "Bearer offline-test-key", "Bearer auth");
   check(!r.isError && r.json.status === "success" && r.json.credits_used === 1 && r.json.results.length === 10, "plain search: status, credits, 10 results");
   check(r.json.results.every((x) => !("engine" in x) && !("content" in x) && !("content_error" in x)), "plain search: no engine/content keys");
