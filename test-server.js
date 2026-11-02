@@ -100,14 +100,14 @@ try {
     capabilities: {},
     clientInfo: { name: "offline-test", version: "1.0.0" },
   });
-  check(init.result?.serverInfo?.version === "1.3.0", `initialize -> ${init.result?.serverInfo?.name} ${init.result?.serverInfo?.version}`);
+  check(init.result?.serverInfo?.version === "1.4.0", `initialize -> ${init.result?.serverInfo?.name} ${init.result?.serverInfo?.version}`);
 
   const list = await request("tools/list");
   const tools = list.result?.tools || [];
   const search = tools.find((t) => t.name === "serpex_search");
   const extract = tools.find((t) => t.name === "serpex_extract");
   check(search && Object.keys(search.inputSchema.properties).sort().join(",") === "content_results,include_content,q", "serpex_search(q, include_content, content_results)");
-  check(extract && Object.keys(extract.inputSchema.properties).sort().join(",") === "format,urls", "serpex_extract(urls, format), no stealth input");
+  check(extract && Object.keys(extract.inputSchema.properties).sort().join(",") === "format,urls", "serpex_extract(urls, format)");
   const allText = JSON.stringify(tools).toLowerCase();
   check(!/multi-engine|serp api|cheapest|\bengines?\b/.test(allText), "tool descriptions name no engines");
 
@@ -116,7 +116,7 @@ try {
   let req = seen.at(-1);
   check(req.method === "GET" && req.path === "/api/search" && Object.keys(req.query).join(",") === "q", "plain search sends only q");
   const ua = req.headers["user-agent"] || "";
-  check(/^serpex-js\/2\.(1[2-9]|[2-9]\d)\.\d+ serpex-mcp\/1\.3\.0$/.test(ua), `User-Agent (${ua})`);
+  check(/^serpex-js\/2\.(1[2-9]|[2-9]\d)\.\d+ serpex-mcp\/1\.4\.0$/.test(ua), `User-Agent (${ua})`);
   check(req.headers.authorization === "Bearer offline-test-key", "Bearer auth");
   check(!r.isError && r.json.status === "success" && r.json.credits_used === 1 && r.json.results.length === 10, "plain search: status, credits, 10 results");
   check(r.json.results.every((x) => !("engine" in x) && !("content" in x) && !("content_error" in x)), "plain search: no engine/content keys");
@@ -160,6 +160,10 @@ try {
   req = seen.at(-1);
   check(req.method === "POST" && req.path === "/api/crawl" && JSON.stringify(req.body) === JSON.stringify({ urls: ["https://example.com/extract_markdown"] }), "extract sends only urls");
   check(!r.isError && r.json.successful === 1 && r.json.credits_used === 1 && typeof r.json.results[0].markdown === "string", "extract markdown");
+
+  // an argument the tool does not declare is never forwarded to the API
+  await call("serpex_extract", { urls: ["https://example.com/extract_markdown"], stealth: true });
+  check(!("stealth" in (seen.at(-1).body || {})), "extract request body carries no stealth key");
 
   r = await call("serpex_extract", { urls: ["https://example.com/extract_html"], format: "html" });
   check(seen.at(-1).body.format === "html" && typeof r.json.results[0].html === "string", "extract html");

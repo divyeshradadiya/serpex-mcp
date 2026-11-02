@@ -1,6 +1,6 @@
 {
   "name": "serpex-mcp",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Serpex MCP server: web search API and extract API for AI agents. Ranked web results, optionally with page content as markdown, and page extraction",
   "license": "MIT",
   "type": "module",

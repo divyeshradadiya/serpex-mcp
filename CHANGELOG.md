@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0 — 2026-11-02
+
+- Removed the `stealth` option. It ended 1 Nov 2026; the API answers 410 to older versions that send it.
+
 ## 1.3.0 — 2026-10-23
 
 - Calls the API through the official `serpex` SDK (`^2.12.0`) instead of its own axios client, so parameters, timeouts and error parsing cannot drift from the API. `axios` is no longer a dependency. Tool names, inputs and output fields are unchanged; error texts are new.

@@ -135,8 +135,6 @@ and, per URL, `success` plus `markdown` / `html`, or `error` and `error_type` (f
 extracted. Failed URLs are not charged. Extract calls can take up to about a minute, so the
 server waits up to 100 s.
 
-Stealth mode is not exposed: it ends on 2026-11-01.
-
 ### Errors
 
 A failed call returns `isError: true` with one sentence the agent can act on: what happened,
