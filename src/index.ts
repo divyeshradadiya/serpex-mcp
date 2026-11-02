@@ -12,7 +12,7 @@ import {
 import { SerpexClient, SerpApiException } from 'serpex';
 import type { ExtractParams, ExtractResponse, SearchParams, SearchResponse, SerpexClientOptions } from 'serpex';
 
-const VERSION = '1.3.0';
+const VERSION = '1.4.0';
 
 const API_KEY = process.env.SERPEX_API_KEY;
 if (!API_KEY) {
@@ -178,7 +178,6 @@ function parseExtractArgs(args: Record<string, unknown>): ExtractParams {
   if (args.format !== undefined && args.format !== 'markdown' && args.format !== 'html') {
     throw new McpError(ErrorCode.InvalidParams, 'format must be "markdown" or "html"');
   }
-  // Stealth mode is not exposed: it ends on 2026-11-01.
   return {
     urls: urls as string[],
     ...(args.format !== undefined ? { format: args.format as 'markdown' | 'html' } : {}),
