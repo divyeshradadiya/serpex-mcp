@@ -34,7 +34,7 @@ npm publish
 ```bash
 # 1. set "version" in package.json, commit, merge to main
 # 2. tag and push the tag
-git tag v1.1.2 && git push origin v1.1.2
+git tag v1.4.2 && git push origin v1.4.2
 ```
 
 A normal push to `main` does not publish.

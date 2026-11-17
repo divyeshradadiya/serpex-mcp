@@ -1,7 +1,7 @@
 {
   "name": "serpex-mcp",
-  "version": "1.4.1",
-  "description": "Serpex MCP server: web search API and extract API for AI agents. Ranked web results, optionally with page content as markdown, and page extraction",
+  "version": "1.4.2",
+  "description": "Serpex MCP server: web search engine for AI agents. Ranked web results with optional full-page Markdown, plus URL-to-Markdown extraction, for research, data enrichment, and legal, hiring, sales and finance workflows.",
   "license": "MIT",
   "type": "module",
   "main": "./build/index.js",
@@ -26,7 +26,6 @@
     "search",
     "search api",
     "web search",
-    "real-time search",
     "ai agents",
     "llm",
     "rag",
@@ -34,7 +33,11 @@
     "claude",
     "claude-desktop",
     "jan",
-    "modelcontextprotocol"
+    "modelcontextprotocol",
+    "data enrichment",
+    "research",
+    "extract api",
+    "markdown"
   ],
   "author": "Serpex Team",
   "repository": {

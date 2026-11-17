@@ -2,7 +2,7 @@
 
 ## Overview
 
-This MCP (Model Context Protocol) server enables AI applications to perform web searches using Serpex, the web search API and extract API for AI agents: ranked web results, optional page content as markdown, and page extraction.
+This MCP (Model Context Protocol) server gives AI applications web search and page extraction through Serpex, a web search engine built for AI agents: ranked web results, optional page content as Markdown, and URL-to-Markdown extraction. Use it for research, data enrichment, and legal, hiring, sales and finance work.
 
 ## Installation
 
@@ -86,7 +86,7 @@ There is no engine parameter: Serpex is one search engine. (The API's legacy `en
 ## API Information
 
 - **Base URL:** `https://api.serpex.dev`
-- **Endpoint:** `/api/search`
+- **Endpoints:** `GET /api/search` (search), `POST /api/crawl` (extract)
 - **Authentication:** Bearer token (API key)
 - **Documentation:** [https://serpex.dev/docs](https://serpex.dev/docs)
 
