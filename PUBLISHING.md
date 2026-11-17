@@ -29,7 +29,7 @@ npm publish
 
 ## Publishing (tag-triggered)
 
-`.github/workflows/publish-npm.yml` publishes when a `v*` tag is pushed (or a GitHub release is published). There is no auto-bump:
+`.github/workflows/publish-npm.yml` publishes to npm when a `v*` tag is pushed, then creates the matching GitHub Release (Glama's Auto-Release rebuilds the listing from GitHub Releases, so its tool list stays current). There is no auto-bump:
 
 ```bash
 # 1. set "version" in package.json, commit, merge to main
