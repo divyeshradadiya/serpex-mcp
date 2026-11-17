@@ -73,7 +73,7 @@ serpex-mcp
 
 | Variable | Required | Meaning |
 |---|---|---|
-| `SERPEX_API_KEY` | yes | Your Serpex API key |
+| `SERPEX_API_KEY` | yes, for tool calls | Your Serpex API key. Without it the server still starts and lists its tools; every tool call then returns an error asking for the key (not charged) |
 | `SERPEX_BASE_URL` | no | API base URL. Default `https://api.serpex.dev` |
 
 The server calls the API through the official [`serpex`](https://www.npmjs.com/package/serpex)

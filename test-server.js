@@ -47,36 +47,39 @@ await new Promise((r) => api.listen(0, "127.0.0.1", r));
 const BASE = `http://127.0.0.1:${api.address().port}`;
 
 // ---- MCP server over stdio --------------------------------------------------
-const server = spawn("node", ["build/index.js"], {
-  env: { ...process.env, SERPEX_API_KEY: "offline-test-key", SERPEX_BASE_URL: BASE },
-  stdio: ["pipe", "pipe", "pipe"],
-});
-
-const pending = new Map();
-let nextId = 1;
-readline.createInterface({ input: server.stdout }).on("line", (line) => {
-  try {
-    const msg = JSON.parse(line);
-    if (pending.has(msg.id)) {
-      pending.get(msg.id)(msg);
-      pending.delete(msg.id);
+function startServer(env) {
+  const proc = spawn("node", ["build/index.js"], { env, stdio: ["pipe", "pipe", "pipe"] });
+  const pending = new Map();
+  let nextId = 1;
+  readline.createInterface({ input: proc.stdout }).on("line", (line) => {
+    try {
+      const msg = JSON.parse(line);
+      if (pending.has(msg.id)) {
+        pending.get(msg.id)(msg);
+        pending.delete(msg.id);
+      }
+    } catch {
+      // ignore non-JSON output
     }
-  } catch {
-    // ignore non-JSON output
-  }
-});
-
-function request(method, params = {}) {
-  const id = nextId++;
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error(`timeout waiting for ${method}`)), 10000);
-    pending.set(id, (msg) => {
-      clearTimeout(timer);
-      resolve(msg);
-    });
-    server.stdin.write(JSON.stringify({ jsonrpc: "2.0", id, method, params }) + "\n");
   });
+  const request = (method, params = {}) => {
+    const id = nextId++;
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error(`timeout waiting for ${method}`)), 10000);
+      pending.set(id, (msg) => {
+        clearTimeout(timer);
+        resolve(msg);
+      });
+      proc.stdin.write(JSON.stringify({ jsonrpc: "2.0", id, method, params }) + "\n");
+    });
+  };
+  return { proc, request };
 }
+
+const INIT = { protocolVersion: "2024-11-05", capabilities: {}, clientInfo: { name: "offline-test", version: "1.0.0" } };
+const main = startServer({ ...process.env, SERPEX_API_KEY: "offline-test-key", SERPEX_BASE_URL: BASE });
+const server = main.proc;
+const request = main.request;
 
 let failures = 0;
 function check(cond, label) {
@@ -87,20 +90,16 @@ function check(cond, label) {
   }
 }
 
-async function call(name, args) {
-  const msg = await request("tools/call", { name, arguments: args });
+async function call(name, args, req = request) {
+  const msg = await req("tools/call", { name, arguments: args });
   if (msg.error) return { rpcError: msg.error };
   const text = msg.result.content[0].text;
   return { isError: msg.result.isError === true, text, json: msg.result.isError ? undefined : JSON.parse(text) };
 }
 
 try {
-  const init = await request("initialize", {
-    protocolVersion: "2024-11-05",
-    capabilities: {},
-    clientInfo: { name: "offline-test", version: "1.0.0" },
-  });
-  check(init.result?.serverInfo?.version === "1.4.0", `initialize -> ${init.result?.serverInfo?.name} ${init.result?.serverInfo?.version}`);
+  const init = await request("initialize", INIT);
+  check(init.result?.serverInfo?.version === "1.4.1", `initialize -> ${init.result?.serverInfo?.name} ${init.result?.serverInfo?.version}`);
 
   const list = await request("tools/list");
   const tools = list.result?.tools || [];
@@ -116,7 +115,7 @@ try {
   let req = seen.at(-1);
   check(req.method === "GET" && req.path === "/api/search" && Object.keys(req.query).join(",") === "q", "plain search sends only q");
   const ua = req.headers["user-agent"] || "";
-  check(/^serpex-js\/2\.(1[2-9]|[2-9]\d)\.\d+ serpex-mcp\/1\.4\.0$/.test(ua), `User-Agent (${ua})`);
+  check(/^serpex-js\/2\.(1[2-9]|[2-9]\d)\.\d+ serpex-mcp\/1\.4\.1$/.test(ua), `User-Agent (${ua})`);
   check(req.headers.authorization === "Bearer offline-test-key", "Bearer auth");
   check(!r.isError && r.json.status === "success" && r.json.credits_used === 1 && r.json.results.length === 10, "plain search: status, credits, 10 results");
   check(r.json.results.every((x) => !("engine" in x) && !("content" in x) && !("content_error" in x)), "plain search: no engine/content keys");
@@ -179,6 +178,29 @@ try {
   ]) {
     r = await call("serpex_extract", { urls: [`https://example.com/${name}`] });
     check(r.isError && pattern.test(r.text), `${name} -> "${r.text}"`);
+  }
+
+  // --- no API key: registries (Glama, Smithery) start the server without secrets to list its tools ---
+  for (const [label, key] of [["unset", undefined], ["blank", "   "]]) {
+    const env = { ...process.env, SERPEX_BASE_URL: BASE };
+    delete env.SERPEX_API_KEY;
+    if (key !== undefined) env.SERPEX_API_KEY = key;
+    const bare = startServer(env);
+    try {
+      const bareInit = await bare.request("initialize", INIT);
+      check(bareInit.result?.serverInfo?.version === "1.4.1", `no key (${label}): server starts and initializes`);
+      const bareTools = (await bare.request("tools/list")).result?.tools || [];
+      check(bareTools.map((t) => t.name).sort().join(",") === "serpex_extract,serpex_search", `no key (${label}): tools/list -> serpex_search, serpex_extract`);
+      const calls = seen.length;
+      r = await call("serpex_search", { q: "search_plain" }, bare.request);
+      check(r.isError && /SERPEX_API_KEY is not set/.test(r.text) && seen.length === calls, `no key (${label}): search answers a clear error, no API call`);
+      r = await call("serpex_extract", { urls: ["https://example.com/extract_markdown"] }, bare.request);
+      check(r.isError && /SERPEX_API_KEY is not set/.test(r.text) && seen.length === calls, `no key (${label}): extract answers a clear error, no API call`);
+      r = await call("serpex_search", { q: "" }, bare.request);
+      check(r.rpcError !== undefined, `no key (${label}): bad arguments still rejected first`);
+    } finally {
+      bare.proc.kill();
+    }
   }
 } catch (error) {
   failures++;

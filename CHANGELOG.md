@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.1 — 2026-11-17
+
+- The server starts without `SERPEX_API_KEY`. MCP clients and registries (such as Glama) start servers without secrets to list their tools. Before this release the server exited at start-up; now `tools/list` works and each tool call returns `SERPEX_API_KEY is not set…` (not charged, no request sent). Arguments are still validated first. A blank key counts as missing.
+- `glama.json` added (Glama listing ownership).
+- Tools, inputs, outputs and the API calls are unchanged.
+
 ## 1.4.0 — 2026-11-02
 
 - Removed the `stealth` option. It ended 1 Nov 2026; the API answers 410 to older versions that send it.
