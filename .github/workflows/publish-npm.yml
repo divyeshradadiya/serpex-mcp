@@ -11,7 +11,7 @@ on:
       - 'v*'
 
 permissions:
-  contents: read
+  contents: write # create the GitHub Release (Glama's Auto-Release builds from GitHub Releases)
   id-token: write
 
 jobs:
@@ -34,3 +34,10 @@ jobs:
       - run: npm install -g npm@11 # trusted publishing needs npm >= 11.5.1 (npm 12 needs node >= 22.22)
       # npm (not pnpm) publishes: npm's CLI does the OIDC exchange
       - run: npm publish --access public
+
+      # A GitHub Release per version: Glama (and other MCP directories) rebuild and re-inspect the
+      # server from GitHub Releases, not from tags. Without it their tool list goes stale.
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" --notes "See CHANGELOG.md for the changes in ${GITHUB_REF_NAME#v}. npm: https://www.npmjs.com/package/serpex-mcp/v/${GITHUB_REF_NAME#v}"
