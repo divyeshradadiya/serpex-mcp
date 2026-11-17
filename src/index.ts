@@ -12,12 +12,15 @@ import {
 import { SerpexClient, SerpApiException } from 'serpex';
 import type { ExtractParams, ExtractResponse, SearchParams, SearchResponse, SerpexClientOptions } from 'serpex';
 
-const VERSION = '1.4.0';
+const VERSION = '1.4.1';
 
-const API_KEY = process.env.SERPEX_API_KEY;
-if (!API_KEY) {
-  throw new Error('SERPEX_API_KEY environment variable is required');
-}
+// Read once at start. A missing key does NOT stop the server: MCP clients and
+// registries (Glama, Smithery) start it without secrets to list its tools, and
+// each tool call then answers with a clear "set SERPEX_API_KEY" error instead.
+const API_KEY = process.env.SERPEX_API_KEY?.trim() || undefined;
+
+const MISSING_KEY =
+  'SERPEX_API_KEY is not set. Get an API key at https://serpex.dev and set SERPEX_API_KEY in this MCP server\'s environment. Not charged.';
 
 // Optional override (self-hosting, tests). Defaults to https://api.serpex.dev.
 const BASE_URL = process.env.SERPEX_BASE_URL || 'https://api.serpex.dev';
@@ -186,7 +189,7 @@ function parseExtractArgs(args: Record<string, unknown>): ExtractParams {
 
 class SerpexServer {
   private server: Server;
-  private client: SerpexClient;
+  private client: SerpexClient | undefined;
 
   constructor() {
     this.server = new Server(
@@ -203,7 +206,7 @@ class SerpexServer {
 
     // Adds this server to the SDK's User-Agent: "serpex-js/<sdk> serpex-mcp/<version>".
     const options: SerpexClientOptions = { userAgent: `serpex-mcp/${VERSION}` };
-    this.client = new SerpexClient(API_KEY as string, BASE_URL, options);
+    this.client = API_KEY ? new SerpexClient(API_KEY, BASE_URL, options) : undefined;
 
     this.setupToolHandlers();
 
@@ -277,24 +280,27 @@ class SerpexServer {
 
       const args = request.params.arguments as Record<string, unknown>;
 
+      // Arguments are validated first, so a bad call is reported as such even without a key.
       if (name === 'serpex_extract') {
-        return await this.handleExtract(parseExtractArgs(args));
+        const params = parseExtractArgs(args);
+        return this.client ? await this.handleExtract(this.client, params) : errorResult(MISSING_KEY);
       }
-      return await this.handleSearch(parseSearchArgs(args));
+      const params = parseSearchArgs(args);
+      return this.client ? await this.handleSearch(this.client, params) : errorResult(MISSING_KEY);
     });
   }
 
-  private async handleExtract(params: ExtractParams): Promise<ToolResult> {
+  private async handleExtract(client: SerpexClient, params: ExtractParams): Promise<ToolResult> {
     try {
-      return textResult(formatExtract(await this.client.extract(params)));
+      return textResult(formatExtract(await client.extract(params)));
     } catch (error) {
       return errorResult(describeError(error, 'Extract'));
     }
   }
 
-  private async handleSearch(params: SearchParams): Promise<ToolResult> {
+  private async handleSearch(client: SerpexClient, params: SearchParams): Promise<ToolResult> {
     try {
-      return textResult(formatSearch(await this.client.search(params)));
+      return textResult(formatSearch(await client.search(params)));
     } catch (error) {
       return errorResult(describeError(error, 'Search'));
     }
@@ -303,7 +309,7 @@ class SerpexServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error('Serpex MCP server running');
+    console.error(API_KEY ? 'Serpex MCP server running' : `Serpex MCP server running without an API key: ${MISSING_KEY}`);
   }
 }
 
