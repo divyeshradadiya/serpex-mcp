@@ -3,14 +3,20 @@
 [![npm version](https://badge.fury.io/js/serpex-mcp.svg)](https://www.npmjs.com/package/serpex-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Model Context Protocol (MCP) server that gives AI agents web search and page extraction through [Serpex](https://serpex.dev). Serpex is a web search API and extract API for AI agents. Search returns ranked web results, optionally with page content as markdown; Extract turns known URLs into clean markdown. Every search is routed automatically: there is no engine to choose.
+A Model Context Protocol (MCP) server for [Serpex](https://serpex.dev), a web search engine built for AI agents. Search returns ranked web results, optionally with each page's content as Markdown; Extract turns known URLs into clean Markdown. Agents use it for research, data enrichment, and work in legal, hiring, sales, finance and other industries.
 
 ## Features
 
-✅ **Web Search**: Ranked web results, nothing to configure  
-✅ **Page Content**: Optionally fetch the top results' pages as markdown in the same call  
-✅ **Structured Results**: Clean, consistent JSON responses  
+✅ **Web Search**: Ranked web results as JSON, nothing to configure  
+✅ **Page Content**: Optionally the full content of the top 5 or 10 pages as Markdown, in the same call  
+✅ **Extract**: Up to 10 known URLs to clean Markdown or HTML  
 ✅ **Easy Integration**: Works with Claude Desktop, Jan AI, and any MCP-compatible client  
+
+## Use cases
+
+- Ground agent answers in live web sources, with page content in one call
+- Enrich company and lead records (websites, pricing pages, news)
+- Research legal and regulatory topics, hiring and job markets, finance, products and news in any industry
 
 ## Installation
 
@@ -99,7 +105,7 @@ result for `content` vs `content_error`.
 **Example:**
 ```javascript
 {
-  "q": "artificial intelligence trends 2025",
+  "q": "EU AI Act obligations for employers after:2026-01-01",
   "include_content": true,
   "content_results": 5
 }
@@ -146,7 +152,7 @@ rejected before any request is sent.
 
 ## Getting Your API Key
 
-1. Visit [serpex.dev](https://serpex.dev)
+1. Visit [Serpex](https://serpex.dev)
 2. Sign up for a free account
 3. Get your API key from the dashboard
 4. Use it in the `SERPEX_API_KEY` environment variable
@@ -154,8 +160,8 @@ rejected before any request is sent.
 ## API Information
 
 - **Base URL**: `https://api.serpex.dev`
-- **Documentation**: [https://serpex.dev/docs](https://serpex.dev/docs)
-- **Pricing**: [serpex.dev/docs/getting-started/pricing](https://serpex.dev/docs/getting-started/pricing)
+- **Documentation**: [Serpex docs](https://serpex.dev/docs)
+- **Pricing**: [Serpex pricing](https://serpex.dev/docs/getting-started/pricing)
 
 ## Development
 
@@ -185,7 +191,7 @@ MIT
 
 ## Links
 
-- [Serpex Website](https://serpex.dev)
-- [Serpex Documentation](https://serpex.dev/docs)
+- [Serpex](https://serpex.dev)
+- [Serpex documentation](https://serpex.dev/docs)
 - [Model Context Protocol](https://modelcontextprotocol.io)
 - [MCP Specification](https://modelcontextprotocol.io/specification)

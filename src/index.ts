@@ -12,7 +12,7 @@ import {
 import { SerpexClient, SerpApiException } from 'serpex';
 import type { ExtractParams, ExtractResponse, SearchParams, SearchResponse, SerpexClientOptions } from 'serpex';
 
-const VERSION = '1.4.1';
+const VERSION = '1.4.2';
 
 // Read once at start. A missing key does NOT stop the server: MCP clients and
 // registries (Glama, Smithery) start it without secrets to list its tools, and
@@ -20,7 +20,7 @@ const VERSION = '1.4.1';
 const API_KEY = process.env.SERPEX_API_KEY?.trim() || undefined;
 
 const MISSING_KEY =
-  'SERPEX_API_KEY is not set. Get an API key at https://serpex.dev and set SERPEX_API_KEY in this MCP server\'s environment. Not charged.';
+  'SERPEX_API_KEY is not set. Create an API key in your Serpex dashboard and set SERPEX_API_KEY in this MCP server\'s environment. Not charged.';
 
 // Optional override (self-hosting, tests). Defaults to https://api.serpex.dev.
 const BASE_URL = process.env.SERPEX_BASE_URL || 'https://api.serpex.dev';

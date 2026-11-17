@@ -99,7 +99,7 @@ async function call(name, args, req = request) {
 
 try {
   const init = await request("initialize", INIT);
-  check(init.result?.serverInfo?.version === "1.4.1", `initialize -> ${init.result?.serverInfo?.name} ${init.result?.serverInfo?.version}`);
+  check(init.result?.serverInfo?.version === "1.4.2", `initialize -> ${init.result?.serverInfo?.name} ${init.result?.serverInfo?.version}`);
 
   const list = await request("tools/list");
   const tools = list.result?.tools || [];
@@ -115,7 +115,7 @@ try {
   let req = seen.at(-1);
   check(req.method === "GET" && req.path === "/api/search" && Object.keys(req.query).join(",") === "q", "plain search sends only q");
   const ua = req.headers["user-agent"] || "";
-  check(/^serpex-js\/2\.(1[2-9]|[2-9]\d)\.\d+ serpex-mcp\/1\.4\.1$/.test(ua), `User-Agent (${ua})`);
+  check(/^serpex-js\/2\.(1[2-9]|[2-9]\d)\.\d+ serpex-mcp\/1\.4\.2$/.test(ua), `User-Agent (${ua})`);
   check(req.headers.authorization === "Bearer offline-test-key", "Bearer auth");
   check(!r.isError && r.json.status === "success" && r.json.credits_used === 1 && r.json.results.length === 10, "plain search: status, credits, 10 results");
   check(r.json.results.every((x) => !("engine" in x) && !("content" in x) && !("content_error" in x)), "plain search: no engine/content keys");
@@ -188,7 +188,7 @@ try {
     const bare = startServer(env);
     try {
       const bareInit = await bare.request("initialize", INIT);
-      check(bareInit.result?.serverInfo?.version === "1.4.1", `no key (${label}): server starts and initializes`);
+      check(bareInit.result?.serverInfo?.version === "1.4.2", `no key (${label}): server starts and initializes`);
       const bareTools = (await bare.request("tools/list")).result?.tools || [];
       check(bareTools.map((t) => t.name).sort().join(",") === "serpex_extract,serpex_search", `no key (${label}): tools/list -> serpex_search, serpex_extract`);
       const calls = seen.length;

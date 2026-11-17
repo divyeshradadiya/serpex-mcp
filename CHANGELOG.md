@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.2 — 2026-11-17
+
+- Package description, README and integration guide: Serpex is a web search engine built for AI agents; use cases (research, data enrichment, legal, hiring, sales, finance) listed; both extract and search endpoints named.
+- The missing-key error now points to the Serpex dashboard.
+- No change to tools, inputs, outputs or API calls.
+
 ## 1.4.1 — 2026-11-17
 
 - The server starts without `SERPEX_API_KEY`. MCP clients and registries (such as Glama) start servers without secrets to list their tools. Before this release the server exited at start-up; now `tools/list` works and each tool call returns `SERPEX_API_KEY is not set…` (not charged, no request sent). Arguments are still validated first. A blank key counts as missing.
