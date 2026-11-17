@@ -40,4 +40,6 @@ jobs:
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" --notes "See CHANGELOG.md for the changes in ${GITHUB_REF_NAME#v}. npm: https://www.npmjs.com/package/serpex-mcp/v/${GITHUB_REF_NAME#v}"
+        run: |
+          gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" \
+            --notes "See CHANGELOG.md for the changes in ${GITHUB_REF_NAME#v}. npm: https://www.npmjs.com/package/serpex-mcp/v/${GITHUB_REF_NAME#v}"
